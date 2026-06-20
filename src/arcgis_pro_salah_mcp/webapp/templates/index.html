@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>__APP_TITLE__</title>
+
+    <!-- ArcGIS Maps SDK for JavaScript __JS_SDK_VERSION__.
+         As of 5.0 a single module bundle ships the core API, the <arcgis-*> map
+         components AND the Calcite Design System components — no AMD require(),
+         no separate Calcite include. Core classes load via $arcgis.import()
+         (see app.js). -->
+    <link rel="stylesheet" href="https://js.arcgis.com/__JS_SDK_VERSION__/esri/themes/light/main.css" />
+    <script type="module" src="https://js.arcgis.com/__JS_SDK_VERSION__/"></script>
+
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; }
+      arcgis-map { height: 100%; width: 100%; }
+      arcgis-legend, arcgis-layer-list, arcgis-basemap-gallery { max-height: 70vh; }
+    </style>
+  </head>
+  <body>
+    <!-- Calcite shell provides the app chrome; the title bar is a Calcite
+         navigation. The map and every widget are ArcGIS web components. -->
+    <calcite-shell content-behind>
+      <calcite-navigation slot="header">
+        <calcite-navigation-logo
+          id="appLogo"
+          slot="logo"
+          icon="map"
+          heading="__APP_TITLE__"
+        ></calcite-navigation-logo>
+      </calcite-navigation>
+
+      <!-- The map source (saved Web Map id vs. basemap + hosted layers) is
+           runtime config, so app.js sets it on this element. Widgets are
+           declared here and pruned by app.js to match the configured set. -->
+      <arcgis-map>
+        <arcgis-zoom slot="top-left"></arcgis-zoom>
+        <arcgis-home id="w-home" slot="top-left"></arcgis-home>
+        <arcgis-search id="w-search" slot="top-right"></arcgis-search>
+        <arcgis-expand id="w-layerlist" slot="top-right">
+          <arcgis-layer-list></arcgis-layer-list>
+        </arcgis-expand>
+        <arcgis-expand id="w-basemap" slot="top-right">
+          <arcgis-basemap-gallery></arcgis-basemap-gallery>
+        </arcgis-expand>
+        <arcgis-expand id="w-legend" slot="bottom-left" expanded>
+          <arcgis-legend></arcgis-legend>
+        </arcgis-expand>
+      </arcgis-map>
+    </calcite-shell>
+
+    <!-- App config written by the generator (window.APP_CONFIG) -->
+    <script src="./config.js"></script>
+    <!-- App logic -->
+    <script src="./app.js"></script>
+  </body>
+</html>

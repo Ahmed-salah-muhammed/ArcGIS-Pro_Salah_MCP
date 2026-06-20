@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>__APP_TITLE__</title>
+
+    <!-- ArcGIS Maps SDK for JavaScript __JS_SDK_VERSION__ — one module bundle ships
+         the core API, the <arcgis-*> map components and Calcite together. -->
+    <link id="esriTheme" rel="stylesheet" href="https://js.arcgis.com/__JS_SDK_VERSION__/esri/themes/light/main.css" />
+    <script type="module" src="https://js.arcgis.com/__JS_SDK_VERSION__/"></script>
+
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; }
+      arcgis-map { height: 100%; width: 100%; }
+      arcgis-legend, arcgis-layer-list, arcgis-basemap-gallery { max-height: 60vh; }
+
+      /* Indicator cards */
+      #indicators { padding: 10px; display: grid; gap: 10px; }
+      .stat { display: flex; align-items: center; gap: 12px; }
+      .stat calcite-icon { color: var(--calcite-color-brand); flex: 0 0 auto; }
+      .stat-value { font-size: 24px; font-weight: 700; line-height: 1.1; }
+      .stat-label { font-size: 12px; color: var(--calcite-color-text-3); }
+
+      /* Category breakdown bars */
+      #breakdown { padding: 4px 12px 12px; }
+      .bar-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px;
+                 align-items: center; margin: 6px 0; font-size: 12px; }
+      .bar-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .bar-count { color: var(--calcite-color-text-3); font-variant-numeric: tabular-nums; }
+      .bar-track { grid-column: 1 / -1; background: var(--calcite-color-border-3);
+                   height: 8px; border-radius: 4px; overflow: hidden; }
+      .bar-fill { background: var(--calcite-color-brand); height: 100%; border-radius: 4px; }
+      .muted { color: var(--calcite-color-text-3); font-size: 12px; padding: 10px; }
+    </style>
+  </head>
+  <body>
+    <calcite-shell content-behind>
+      <calcite-navigation slot="header">
+        <calcite-navigation-logo
+          id="appLogo" slot="logo" icon="dashboard" heading="__APP_TITLE__"
+        ></calcite-navigation-logo>
+        <calcite-radio-button-group slot="content-end" name="theme" layout="horizontal" scale="s" id="themeToggle">
+          <calcite-label layout="inline" scale="s">
+            <calcite-radio-button value="light" checked></calcite-radio-button>Light
+          </calcite-label>
+          <calcite-label layout="inline" scale="s">
+            <calcite-radio-button value="dark"></calcite-radio-button>Dark
+          </calcite-label>
+        </calcite-radio-button-group>
+        <calcite-chip style="margin-left: 15px; margin-top: -10px;" id="extentChip" slot="content-end" icon="extent" scale="s" appearance="outline-fill">
+          loading…
+        </calcite-chip>
+      </calcite-navigation>
+
+      <!-- LEFT — live indicators + category breakdown -->
+      <calcite-shell-panel slot="panel-start" display-mode="dock" width-scale="m">
+        <calcite-panel heading="Indicators" description="Recalculated for the map's current extent">
+          <calcite-icon icon="gauge" slot="header-actions-end" scale="s"></calcite-icon>
+          <div id="indicators"><div class="muted">Loading data…</div></div>
+          <calcite-block heading="Breakdown" icon-start="graph-bar" collapsible open id="breakdownBlock">
+            <div id="breakdown"><div class="muted">—</div></div>
+          </calcite-block>
+          <!-- Legend docked in the panel (bound to the map via reference-element),
+               instead of floating over the map as a widget. -->
+          <calcite-block heading="Legend" icon-start="legend" collapsible open id="w-legend">
+            <arcgis-legend reference-element="dashMap"></arcgis-legend>
+          </calcite-block>
+        </calcite-panel>
+      </calcite-shell-panel>
+
+      <!-- CENTER — the map and its widgets. The legend is NOT here; it is docked
+           in the left panel above and bound back to this map by id. -->
+      <arcgis-map id="dashMap">
+        <arcgis-zoom slot="top-left"></arcgis-zoom>
+        <arcgis-home id="w-home" slot="top-left"></arcgis-home>
+        <arcgis-search id="w-search" slot="top-right"></arcgis-search>
+        <arcgis-expand id="w-layerlist" slot="top-right">
+          <arcgis-layer-list></arcgis-layer-list>
+        </arcgis-expand>
+        <arcgis-expand id="w-basemap" slot="top-right">
+          <arcgis-basemap-gallery></arcgis-basemap-gallery>
+        </arcgis-expand>
+      </arcgis-map>
+
+      <!-- RIGHT — features currently in view (click to fly + highlight) -->
+      <calcite-shell-panel slot="panel-end" display-mode="dock" width-scale="m">
+        <calcite-panel heading="Features in view" id="featPanel">
+          <calcite-icon icon="list-check" slot="header-actions-end" scale="s"></calcite-icon>
+          <calcite-list id="featList" selection-mode="single" filter-enabled>
+            <div slot="filter-no-results" class="muted">No matches.</div>
+          </calcite-list>
+        </calcite-panel>
+      </calcite-shell-panel>
+    </calcite-shell>
+
+    <!-- App config written by the generator (window.APP_CONFIG) -->
+    <script src="./config.js"></script>
+    <!-- Dashboard logic -->
+    <script src="./dashboard.js"></script>
+  </body>
+</html>

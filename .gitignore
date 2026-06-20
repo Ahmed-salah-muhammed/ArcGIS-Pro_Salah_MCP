@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Tests / tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ArcGIS scratch / outputs
+*.aprx.lock
+scratch.gdb/
+output/
+*.log
+
+# Node (web app)
+node_modules/
+.vite/
+
+# .NET / live-bridge add-in (build intermediates & output)
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+# Built add-in package (produced by the Pro SDK build, not source)
+*.esriAddinX
+
+# Secrets — never commit portal credentials
+.env
+*.profile
+arcgis_profiles/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vs/
+.idea/
+.vscode/
