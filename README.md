@@ -247,14 +247,21 @@ custom Calcite panels, charts, tools and interaction logic, exactly to your spec
 
 ## The Salah MCP ribbon
 
-| Button | Icon | What it does |
-| --- | --- | --- |
-| **Start Server** | green play | Start/stop the loopback bridge so `live_*` tools can reach the open session |
-| **Ping** | cyan gauge | `GET /health` on the bridge and show the response |
-| **Publish** | blue upload | Publish chosen layers (Feature/Tile/Vector Tile) to your portal + optional Web Map |
-| **Create Web App** | orange browser | Generate a static Maps SDK for JS app and preview it on localhost |
-| **Create Dashboard** | indigo bar-chart | Generate an interactive dashboard and preview it on localhost |
-| **Deploy Web App** | GitHub mark | Push the generated folder to GitHub and (optionally) enable Pages |
+Once the **ProSalahBridge** add-in is installed, a **Salah MCP** tab appears on
+the ArcGIS Pro ribbon. It groups the six buttons into three task areas — **Live
+Bridge**, **ArcGIS Online**, and **Web App** — so the whole *analyze → publish →
+visualize → deploy* workflow is one click away, no agent required.
+
+![The Salah MCP ribbon tab in ArcGIS Pro](docs/images/ribbon.png)
+
+| Button | Icon | Group | What it does |
+| --- | --- | --- | --- |
+| **Start / Stop Server** | green play | Live Bridge | Start/stop the loopback bridge so `live_*` tools can reach the open session |
+| **Ping** | cyan gauge | Live Bridge | `GET /health` on the bridge and show the response |
+| **Publish** | blue upload | ArcGIS Online | Publish chosen layers (Feature/Tile/Vector Tile) to your portal + optional Web Map |
+| **Create Web App** | orange browser | Web App | Generate a static Maps SDK for JS app and preview it on localhost |
+| **Create Dashboard** | indigo bar-chart | Web App | Generate an interactive dashboard and preview it on localhost |
+| **Deploy Web App** | GitHub mark | Web App | Push the generated folder to GitHub and (optionally) enable Pages |
 
 Icons are generated from the official [Calcite Design System](https://developers.arcgis.com/calcite-design-system/icons/)
 set (plus GitHub's Octicons for the Deploy mark) — see `ProSalahBridge/Images/make_icons.py`.
@@ -262,6 +269,94 @@ set (plus GitHub's Octicons for the Deploy mark) — see `ProSalahBridge/Images/
 The **Publish** and **Deploy** progress windows are minimizable / hideable (a
 **Hide** button + taskbar), so long uploads can run in the background while you
 keep working in Pro.
+
+### Live Bridge — Start Server & Ping
+
+The **Start Server** button toggles the loopback HTTP bridge (port `2026`, no
+token) that runs *inside* the open Pro session. Once it's up, the `live_*` tools
+— and Claude / Antigravity over MCP — can list layers, zoom, query and run
+geoprocessing against the map you're actually looking at.
+
+| Start the bridge | Confirm it's alive (Ping) |
+| --- | --- |
+| ![Start Server confirmation: MCP Live Bridge started on http://127.0.0.1:2026](docs/images/start-server.png) | ![Ping result: GET /health → HTTP 200 OK, {"ok":true,"data":"alive"}](docs/images/ping.png) |
+
+- **Start Server** flips to **Stop Server** while running and shows the bridge URL
+  (`http://127.0.0.1:2026`). From here you "talk to Claude / Antigravity over MCP."
+- **Ping** issues `GET /health` and prints the raw response — `HTTP 200 OK` with
+  `{"ok":true,"data":"alive"}` means the bridge is reachable and the `live_*`
+  layer is ready.
+
+### ArcGIS Online — Publish
+
+**Publish** uploads the layers you pick straight to the portal you're signed into
+inside ArcGIS Pro — into a brand-new folder, with metadata derived from the data
+itself.
+
+![Publish layers dialog: folder name, layer checklist with per-layer type, layer-type radios, and Create Web Map option](docs/images/publish.png)
+
+- **New folder** — names the portal folder the items land in (e.g. `Salah MCP`).
+- **Layer checklist** — tick the layers to publish (or **Select all**); set a
+  **per-layer type** with the dropdown, or flip every layer at once with the
+  **Layer Type** radios — **Feature**, **Tile**, or **Vector Tile**.
+- **Create a Web Map of these layers** — optionally assembles a Web Map in the
+  same folder, ready to feed straight into **Create Web App** / **Create Dashboard**.
+- **Start Publishing** runs the upload; the progress window can be hidden so it
+  keeps going in the background.
+
+### Web App — Create Web App
+
+**Create Web App** generates an opinionated, no-build static site (ArcGIS Maps SDK
+for JS 5.0 + Calcite) from a Web Map item-id (or hosted layer ids) and previews it
+locally before you deploy.
+
+![Create Web App dialog: app title, Web Map item ID, basemap, widget checkboxes, output folder and preview port](docs/images/create-web-app.png)
+
+- **App title** — the header shown in the generated app.
+- **Web Map item ID** (from Publish, or any Web Map) — the data source; or paste
+  one or more **hosted layer item IDs** instead.
+- **Basemap** — the base layer (e.g. `topo-vector`).
+- **Widgets** — toggle **legend**, **layerList**, **search**, **basemapGallery**,
+  and **home**.
+- **Output folder** + **Preview port** — where the site is written and the
+  `localhost` port it's served on. **Create & Preview** builds it and opens it in
+  your browser.
+
+### Web App — Create Dashboard
+
+**Create Dashboard** builds an interactive dashboard — a map plus live indicators,
+a category breakdown, and a "features in view" list — whose statistics are driven
+by a feature layer. Fields are introspected in the browser, so it auto-picks
+sensible defaults when you leave the optional fields blank.
+
+![Create Dashboard dialog: title, Web Map item ID, basemap, optional category and value fields, map widgets, output and port](docs/images/create-dashboard.png)
+
+- **Dashboard title** — header for the dashboard.
+- **Web Map item ID** — its **first feature layer drives the stats** (or paste
+  hosted layer ids; the first is primary).
+- **Category field** *(optional)* — what the breakdown groups by; **auto-picked**
+  if left blank.
+- **Value fields for the indicators** *(optional)* — comma-separated fields to
+  surface as live indicators.
+- **Map widgets**, **Output folder**, **Preview port** — same controls as Create
+  Web App. **Create & Preview** generates and opens the dashboard.
+
+### Web App — Deploy Web App
+
+**Deploy Web App** pushes a folder you've already generated to a new GitHub repo,
+and can flip on GitHub Pages for a live public URL.
+
+![Deploy Web App dialog: repository name, GitHub token, web app folder, and deployment-mode radios](docs/images/deploy-web-app.png)
+
+- **Repository / app name** — the new repo to create (e.g. `my-arcgis-app`).
+- **GitHub Personal Access Token** — needs rights to **create repos** and **write
+  files**; the dialog links to *how to generate one*. See
+  [Deploy to GitHub](#deploy-to-github) for the exact scopes.
+- **Web app folder** — the generated folder to upload (defaults to your last
+  Create Web App / Dashboard output).
+- **Deployment mode** — **Just upload code** (create repo + push files) or
+  **Upload code & deploy live website** (also enables GitHub Pages). **Deploy**
+  runs it; the progress window is hideable.
 
 ---
 
