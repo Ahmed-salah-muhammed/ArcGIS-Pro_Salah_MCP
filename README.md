@@ -128,7 +128,7 @@ For the Portal layer, add the optional `arcgis` dependency:
 > `arcgispro-py3` (env override → common paths → registry) and re-executes itself
 > there. See `bootstrap.py`.
 
-### Step 2 — (Optional) Install the Salah MCP ribbon
+### Step 2 — Install the Salah MCP ribbon
 
 Build the add-in and install it so the **Salah MCP** tab appears in ArcGIS Pro:
 
@@ -198,6 +198,50 @@ Serve any generated folder locally:
 ```bat
 cd webapp-build && python -m http.server 5500
 ```
+
+---
+
+## Two ways to build an app: static vs. custom
+
+Once your data is in the portal, there are **two routes** to a finished
+application — pick by how much control you want. Both reference your published
+data by its **Web Map / layer item‑id**, so the app inherits the symbology,
+labeling and popups you published.
+
+### 1) Static apps (generated) — the quick path
+
+The `webapp_create` / `webapp_create_dashboard` tools (and the **Create Web App**
+/ **Create Dashboard** ribbon buttons) emit an opinionated, no‑build static site
+(ArcGIS Maps SDK for JS 5.0 + Calcite + map components). Give them a **Web Map
+item‑id** (or layer item‑ids) and they wire up the map, widgets, indicators and
+interactions for you. Fast, consistent, zero hand‑coding.
+
+### 2) Custom apps (built with Claude) — your design & workflow
+
+When you want **your own design, layout, branding, workflow and concept**, skip
+the generator and just **describe the app to Claude**. Claude hand‑writes a
+bespoke ArcGIS Maps SDK for JS 5.0 application around your published **item‑id** —
+custom Calcite panels, charts, tools and interaction logic, exactly to your spec.
+
+**Typical flow:**
+
+1. **Publish** your data / web map (ribbon **Publish**, or `portal_publish_layer`
+   + `portal_create_webmap`) and copy the **item‑id** from your portal.
+2. In Claude, describe the app and hand it the item‑id, e.g.:
+
+   > **You:** "Build a single‑page flood‑response app. Left: a Calcite panel with
+   > a date slider and a 'shelters only' filter. Center: the map from Web Map
+   > item‑id `a1b2c3…`. Right: a live count of affected buildings and a bar chart
+   > by district that updates with the map extent. Dark theme, our logo in the
+   > header. Use ArcGIS Maps SDK for JS 5.0."
+
+3. Claude generates the full app (and can drop the files into a folder for you).
+4. Preview it locally (`python -m http.server`), then deploy with **Deploy Web
+   App** / `webapp_github_pipeline`.
+
+> The static generators are the quick path; the custom route is the creative one —
+> same published data (referenced by **item‑id**), unlimited UI/UX. You can also
+> start from a generated app and ask Claude to restyle or extend it.
 
 ---
 
