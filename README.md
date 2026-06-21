@@ -178,8 +178,14 @@ your client below — the JSON is identical, only the file it goes in differs.
 {
   "mcpServers": {
     "arcgis_pro_salah": {
-      "command": "C:\\Program Files\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3\\Scripts\\arcgis-pro-salah-mcp.exe",
-      "args": []
+      "command": "C:\\Program Files\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3\\python.exe",
+      "args": [
+        "-m",
+        "arcgis_pro_salah_mcp.server"
+      ],
+      "env": {
+        "PYTHONPATH": "your\\path\\MCP\\ArcGIS Pro Salah MCP\\src" // enter your path
+      }
     }
   }
 }
@@ -192,10 +198,13 @@ config** (`mcp_config.json`) and add the **same** block:
 {
   "mcpServers": {
     "arcgis_pro_salah": {
-      "command": "C:\\Program Files\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3\\Scripts\\arcgis-pro-salah-mcp.exe",
-      "args": [],
+      "command": "C:\\Program Files\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3\\python.exe",
+      "args": [
+        "-m",
+        "arcgis_pro_salah_mcp.server"
+      ],
       "env": {
-        "ARCGIS_PROFILE": "agol"
+        "PYTHONPATH": "your\\path\\MCP\\ArcGIS Pro Salah MCP\\src" // enter your path
       }
     }
   }
