@@ -175,20 +175,12 @@ your client below — the JSON is identical, only the file it goes in differs.
 (Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
 
 ```json
-{
-  "mcpServers": {
-    "arcgis_pro_salah": {
+"mcpServers": {
+    "arcgis-pro-salah": {
       "command": "C:\\Program Files\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3\\python.exe",
-      "args": [
-        "-m",
-        "arcgis_pro_salah_mcp.server"
-      ],
-      "env": {
-        "PYTHONPATH": "your\\path\\MCP\\ArcGIS Pro Salah MCP\\src" // enter your path
-      }
+      "args": ["-m", "arcgis_pro_salah_mcp.server"]
     }
   }
-}
 ```
 
 **Google Antigravity** — open the Agent panel → **MCP servers** → **Edit raw
