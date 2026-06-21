@@ -1,13 +1,15 @@
 # ArcGIS Pro Salah MCP
 
-**Drive the whole ArcGIS stack with natural language through Claude — or with one click from an ArcGIS Pro ribbon.**
+**Drive the whole ArcGIS stack with natural language through any MCP agent
+(Claude **or** Google Antigravity) — or with one click from an ArcGIS Pro ribbon.**
 
 A four-layer [Model Context Protocol](https://modelcontextprotocol.io) server.
-You describe what you want, and Claude calls the right ArcGIS operations — from
+You describe what you want, and your agent calls the right ArcGIS operations — from
 desktop geoprocessing, to publishing on ArcGIS Online, to a finished web app or
-an interactive dashboard. The same building blocks are also wired to a **Salah
-MCP ribbon** inside ArcGIS Pro, so you can publish and build apps with no agent
-at all.
+an interactive dashboard. Because it speaks the standard MCP stdio transport it is
+**client-agnostic** — use it from Claude, Google Antigravity, or any other MCP
+client. The same building blocks are also wired to a **Salah MCP ribbon** inside
+ArcGIS Pro, so you can publish and build apps with no agent at all.
 
 ---
 
@@ -44,8 +46,11 @@ dashboard — in one conversation, or one ribbon click.
 
 ## Two ways to use it
 
-1. **From Claude** — chat in natural language; Claude chains the `pro_*` /
-   `portal_*` / `webapp_*` tools. Best for analysis + automation.
+1. **From an AI agent** — chat in natural language and the agent chains the
+   `pro_*` / `portal_*` / `webapp_*` tools. Works with **any MCP client** —
+   [Claude](https://claude.ai/download) **and [Google Antigravity](https://antigravity.google)**
+   are both supported (the server speaks the standard MCP stdio transport, so it
+   is client-agnostic). Best for analysis + automation.
 2. **From the ArcGIS Pro ribbon** — the **Salah MCP** tab gives you one-click
    **Publish**, **Create Web App**, **Create Dashboard** and **Deploy Web App**
    buttons. No agent required; the buttons shell out to the same Python.
@@ -100,7 +105,8 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design.
 
 - **ArcGIS Pro 3.x** (provides ArcPy via its bundled `arcgispro-py3` Python).
 - For publishing: be **signed in** to ArcGIS Online / your portal in ArcGIS Pro.
-- For the Claude workflow: **Claude Desktop**.
+- For the agent workflow: an **MCP client** — **Claude Desktop** *or* **Google
+  Antigravity** (or any other MCP-capable client).
 - For the ribbon buttons: build & install the **ProSalahBridge** add-in (below).
 
 ### Step 1 — Install the package into ArcGIS Pro's Python
@@ -159,9 +165,14 @@ With a project open, layers in the map, and you signed in:
 4. **Deploy Web App** → push the previewed folder to a new GitHub repo and
    (optionally) enable GitHub Pages for a live URL.
 
-### Step 3b — Use it from Claude
+### Step 3b — Use it from an MCP client (Claude **or** Antigravity)
 
-Edit `claude_desktop_config.json` (Windows: `%APPDATA%\Claude\…`):
+The server speaks the **standard MCP stdio transport**, so the registration is the
+same everywhere: point an `mcpServers` entry at the installed entry point. Pick
+your client below — the JSON is identical, only the file it goes in differs.
+
+**Claude Desktop** — edit `claude_desktop_config.json`
+(Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
 
 ```json
 {
@@ -174,10 +185,34 @@ Edit `claude_desktop_config.json` (Windows: `%APPDATA%\Claude\…`):
 }
 ```
 
-> Always point `command` at the installed **entry point**, not at `server.py` —
-> package-relative imports only resolve when the package is installed.
+**Google Antigravity** — open the Agent panel → **MCP servers** → **Edit raw
+config** (`mcp_config.json`) and add the **same** block:
 
-Then build a sample geodatabase and try the end-to-end story:
+```json
+{
+  "mcpServers": {
+    "arcgis_pro_salah": {
+      "command": "C:\\Program Files\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3\\Scripts\\arcgis-pro-salah-mcp.exe",
+      "args": [],
+      "env": {
+        "ARCGIS_PROFILE": "agol"
+      }
+    }
+  }
+}
+```
+
+Save, then reload the MCP servers in Antigravity — the `pro_*`, `live_*`,
+`portal_*` and `webapp_*` tools appear in the agent's tool list, exactly as in
+Claude. (Any [environment variable](#configuration-environment-variables) can go in
+the `env` block; it's shown here on Antigravity but works for either client.)
+
+> Always point `command` at the installed **entry point**
+> (`arcgis-pro-salah-mcp.exe`), not at `server.py` — package-relative imports only
+> resolve when the package is installed. The path is the same regardless of client.
+
+Then build a sample geodatabase and try the end-to-end story (works the same from
+Claude or Antigravity):
 
 ```bat
 "...\arcgispro-py3\python.exe" demos\setup_sample.py
@@ -186,7 +221,7 @@ Then build a sample geodatabase and try the end-to-end story:
 > **You:** "Buffer `sample.gdb/cities` by 50 km, publish the result to my ArcGIS
 > Online as 'City Service Areas', build a web map, then generate a dashboard."
 
-Claude chains:
+The agent (Claude or Antigravity) chains:
 
 1. `pro_buffer("sample.gdb/cities", "sample.gdb/cities_buf", "50 Kilometers")`
 2. `portal_connect(profile="agol")` → `portal_publish_layer("…cities_buf", "City Service Areas")` → item id

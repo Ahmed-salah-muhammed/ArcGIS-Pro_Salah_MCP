@@ -1,4 +1,6 @@
-"""FastMCP server — wires the three tool layers to Claude.
+"""FastMCP server — wires the tool layers to any MCP client (Claude, Google Antigravity, …).
+
+Speaks the standard MCP stdio transport, so any MCP-capable client can drive it.
 
 Run via the installed entry point (recommended), NOT by passing this file to
 python directly (package-relative imports would break):

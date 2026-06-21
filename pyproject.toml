@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "arcgis-pro-salah-mcp"
 version = "0.1.0"
-description = "Control ArcGIS Pro (ArcPy), ArcGIS Online/Portal (ArcGIS API for Python) and generate ArcGIS Maps SDK for JavaScript web apps — all through Claude via the Model Context Protocol."
+description = "Control ArcGIS Pro (ArcPy), ArcGIS Online/Portal (ArcGIS API for Python) and generate ArcGIS Maps SDK for JavaScript web apps — through any MCP client (Claude, Google Antigravity, …) via the Model Context Protocol."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Ahmed Salah Muhammed" }]
-keywords = ["arcgis", "arcgis-pro", "arcpy", "mcp", "gis", "geoai", "claude", "esri"]
+keywords = ["arcgis", "arcgis-pro", "arcpy", "mcp", "gis", "geoai", "claude", "antigravity", "esri"]
 
 # NOTE:
 #   `arcpy` is NOT listed here on purpose — it ships with ArcGIS Pro and is not
